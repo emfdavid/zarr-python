@@ -2225,16 +2225,27 @@ class Array:
 
         for ckey, chunk_select, out_select in zip(ckeys, lchunk_selection, lout_selection):
             if ckey in cdatas:
-                self._process_chunk(
-                    out,
-                    cdatas[ckey],
-                    chunk_select,
-                    drop_axes,
-                    out_is_ndarray,
-                    fields,
-                    out_select,
-                    partial_read_decode=partial_read_decode,
-                )
+                try:
+                    self._process_chunk(
+                        out,
+                        cdatas[ckey],
+                        chunk_select,
+                        drop_axes,
+                        out_is_ndarray,
+                        fields,
+                        out_select,
+                        partial_read_decode=partial_read_decode,
+                    )
+                except RuntimeError:
+                    raise
+                except Exception as e:
+                    print(f"Ignoring exception {type(e)}:'{e}' in _process_chunk: ckey:{ckey}; fields:{fields}; chunk_select:{chunk_select}; out_select: {out_select} fill_value:{self._fill_value};")
+                    if self._fill_value is not None:
+                        if fields:
+                            fill_value = self._fill_value[fields]
+                        else:
+                            fill_value = self._fill_value
+                        out[out_select] = fill_value
             else:
                 # check exception type
                 if self._fill_value is not None:
