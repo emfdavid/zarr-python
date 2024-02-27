@@ -2169,7 +2169,7 @@ class Array:
             cdatas = {key: value for key, value in zip(ckeys, values) if value is not None}
 
 
-        elif "GRIBCodec" in list(map(lambda x: str(x.__class__.__name__), self.filters or [])):
+        elif "GRIBCodec" in list(map(lambda x: str(x.__class__.__name__), self.filters or [])) and len(ckeys) > 1:
             # Start parallel grib hack
             # Make this really specific to GRIBCodec for now - we can make this more general later?
             from joblib import Parallel, delayed
