@@ -2188,7 +2188,7 @@ class Array:
                     logger.exception("Error reading chunk %s", c_key)
                     my_out[out_sel] = instance._fill_value
 
-            with tempfile.NamedTemporaryFile(mode="w+b", prefix="zarr_memmap") as f:
+            with tempfile.NamedTemporaryFile(mode="w+b", prefix="zarr_memmap", dir="/dev/shm") as f:
                 logger.warning("Creating memmap array of shape %s - this could oom", out.shape)
                 output = np.memmap(f, dtype=out.dtype, shape=out.shape, mode='w+')
 
